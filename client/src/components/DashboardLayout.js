@@ -116,11 +116,21 @@ const AssessmentsContent = () => (
   </div>
 );
 
-const DashboardLayout = () => {
+const DashboardLayout = ({onLogout, user}) => {
   const [activeMenu, setActiveMenu] = useState('Dashboard');
+
+  const displayName = user?.displayName || 'User';
 
   return (
     <div className="flex h-screen bg-gray-200">
+      {/*Logout Button */}
+      <button
+        onClick={onLogout}
+        className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+      >
+        Logout
+      </button>
+
       {/* Sidebar */}
       <aside className="w-64 bg-gray-400 flex flex-col items-center py-8 space-y-8">
         {/* Profile Picture */}
@@ -128,7 +138,7 @@ const DashboardLayout = () => {
           <UserCircleIcon className="h-20 w-20 text-gray-400" />
         </div>
         {/* User Name */}
-        <h2 className="text-white text-lg font-semibold">John Doe</h2>
+        <h2 className="text-white text-lg font-semibold">{displayName}</h2>
         {/* Navigation */}
         <nav className="flex flex-col space-y-3 w-full px-2">
           <SidebarItem
@@ -154,7 +164,7 @@ const DashboardLayout = () => {
       {/* Main Content */}
       <main className="flex-1 p-12">
         <h1 className="text-2xl font-semibold text-gray-800 mb-8">
-          Welcome, John!
+          Welcome, {displayName.split(' ')[0]}!
         </h1>
         {activeMenu === 'Dashboard' && <DashboardContent />}
         {activeMenu === 'Courses' && <CoursesContent />}
@@ -163,5 +173,7 @@ const DashboardLayout = () => {
     </div>
   );
 };
+
+
 
 export default DashboardLayout;

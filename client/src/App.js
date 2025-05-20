@@ -1,44 +1,69 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import DashboardLayout from './components/DashboardLayout';
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom' ;
-import { useState } from 'react';
+import CoursesContent from './components/CoursesContent';
+import AssessmentsContent from './components/AssessmentsContent';
+import QuizResults from './components/QuizResults';
+import Profile from './components/Profile';
+import StudyPlan from './components/StudyPlan';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 
-function App() {
-  const [page, setPage] = useState('login');
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+const ProtectedRoute = ({ user }) => {
+  return user ? <Outlet /> : <Navigate to="/login" replace />;
+};
 
-  React.useEffect(() => {
+function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setLoggedIn(!!user);
       setCurrentUser(user);
-      if (user) setPage('dashboard');
-      else setPage('login');
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
 
-  const handleLogin = () => setPage('dashboard');
-  const handleSignup = () => setPage('signup');
-  const handleBackToLogin = () => setPage('login');
-  const handleLogout = () => signOut(auth);
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
-  if (loggedIn && page === 'dashboard') {
-    return <DashboardLayout onLogout={handleLogout} user={currentUser} />;
-  }
-  if (page === 'signup') {
-    return <Signup onBackToLogin={handleBackToLogin} />;
-  }
-  return <Login onLogin={handleLogin} onSignup={handleSignup} />;
+  return (
+    <Router>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={currentUser ? <Navigate to="/dashboard" replace /> : <Login />} />
+        <Route path="/signup" element={currentUser ? <Navigate to="/dashboard" replace /> : <Signup />} />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute user={currentUser} />}>
+          <Route path="/dashboard" element={<DashboardLayout onLogout={() => signOut(auth)} user={currentUser} />}>
+            {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
+            <Route index element={<CoursesContent user={currentUser} />} /> {/* Default dashboard page */}
+            <Route path="courses" element={<CoursesContent user={currentUser} />} />
+            <Route path="assessments" element={<AssessmentsContent user={currentUser} />} />
+            <Route path="profile" element={<Profile user={currentUser} />} />
+            <Route path="quiz-results" element={<QuizResults user={currentUser} />} />
+            <Route path="study-plan" element={<StudyPlan user={currentUser} />} />
+          </Route>
+        </Route>
+
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to={currentUser ? "/dashboard" : "/login"} replace />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
+
+
+
+
+
 
 /*
 function App() {

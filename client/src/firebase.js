@@ -2,15 +2,14 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getDatabase } from "firebase/database";  // <-- Use Realtime Database here
+// Removed Firestore import since you are not using it currently
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDIrx52SrdYgFOtRJWVnnnTDagQUTgnFq8",
   authDomain: "academic-progress-tracker.firebaseapp.com",
+  databaseURL: "https://academic-progress-tracker-default-rtdb.asia-southeast1.firebasedatabase.app/",  // Note: matches your Realtime DB URL
   projectId: "academic-progress-tracker",
   storageBucket: "academic-progress-tracker.firebasestorage.app",
   messagingSenderId: "982433393282",
@@ -23,4 +22,4 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = getDatabase(app);  // <-- Export Realtime Database instance here

@@ -5,12 +5,13 @@ How to run:
 
 1. Clone the repository - 
 git clone https://github.com/Dillon-mj/student-academic-progress-tracker.git
+
 cd student-academic-progress-tracker/client
 
-2. Install dependencies - 
+3. Install dependencies - 
 npm install
 
-3. Start the development server - 
+4. Start the development server - 
 npm start
 
 

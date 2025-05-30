@@ -4,7 +4,7 @@ A web application to help students monitor and improve their academic performanc
 How to run:
 
 1. Clone the repository - 
-git clone https://github.com/your-username/student-academic-progress-tracker.git
+git clone https://github.com/Dillon-mj/student-academic-progress-tracker.git
 cd student-academic-progress-tracker/client
 
 2. Install dependencies - 

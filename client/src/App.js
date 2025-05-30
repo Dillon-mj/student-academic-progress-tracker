@@ -10,6 +10,8 @@ import Profile from './components/Profile';
 import StudyPlan from './components/StudyPlan';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
+import { ref, set } from 'firebase/database'; // Added
+import { db } from './firebase'; // Added
 
 const ProtectedRoute = ({ user }) => {
   return user ? <Outlet /> : <Navigate to="/login" replace />;
@@ -19,8 +21,23 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Function to record login date
+  const recordLoginDate = async (userId) => {
+    try {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      const loginRef = ref(db, `attendance/${userId}/logins/${today}`);
+      await set(loginRef, true);
+    } catch (error) {
+      console.error('Error recording login date:', error);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, record login date
+        recordLoginDate(user.uid);
+      }
       setCurrentUser(user);
       setLoading(false);
     });
@@ -42,7 +59,7 @@ function App() {
         <Route element={<ProtectedRoute user={currentUser} />}>
           <Route path="/dashboard" element={<DashboardLayout onLogout={() => signOut(auth)} user={currentUser} />}>
             {/* Nested routes rendered inside DashboardLayout's <Outlet /> */}
-            <Route index element={<CoursesContent user={currentUser} />} /> {/* Default dashboard page */}
+            <Route index element={<DashboardLayout user={currentUser} />} />
             <Route path="courses" element={<CoursesContent user={currentUser} />} />
             <Route path="assessments" element={<AssessmentsContent user={currentUser} />} />
             <Route path="profile" element={<Profile user={currentUser} />} />

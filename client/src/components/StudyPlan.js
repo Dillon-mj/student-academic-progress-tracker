@@ -157,6 +157,8 @@ const StudyPlan = ({ user }) => {
               </li>
             ))}
           </ul>
+
+          
         )}
       </section>
 

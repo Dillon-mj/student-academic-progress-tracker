@@ -104,7 +104,7 @@ const AssessmentsContent = ({ userCourses, user }) => {
               }}
               className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition"
             >
-              Start Random Quiz
+              Start Quiz
             </button>
           </li>
         ))}

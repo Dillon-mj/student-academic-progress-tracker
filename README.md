@@ -19,7 +19,10 @@ Testing the App:
 -Register a new user or log in with existing credentials.
     (Email: dillon@email.com
      Password: dillon123)
+     
 -Select courses and attempt quizzes.
+
 -Check the dashboard for updated stats and attendance.
+
 -Explore the study plan and profile management features.
 
